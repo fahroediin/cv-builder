@@ -10,9 +10,33 @@
 
 <body>
 
+    <!-- WELCOME MODAL OVERLAY -->
+    <div id="welcome-modal">
+        <div class="modal-content">
+            <h2>Select Your Starting Template</h2>
+            <p>You can always change this later while editing.</p>
+            <div class="theme-options">
+                <div class="theme-card" onclick="selectTheme('classic')">
+                    <div class="theme-preview classic-preview"></div>
+                    <h3>Classic CV</h3>
+                    <p>Standard 1-column layout. ATS-friendly and professional.</p>
+                </div>
+                <div class="theme-card" onclick="selectTheme('modern')">
+                    <div class="theme-preview modern-preview"></div>
+                    <h3>Modern Resume</h3>
+                    <p>Creative 2-column layout with photo/initials avatar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- EDITOR PANE -->
     <div id="editor-pane">
         <div class="toolbar">
+            <select id="theme-selector" onchange="changeThemeFromDropdown(this.value)">
+                <option value="classic">Classic CV</option>
+                <option value="modern">Modern Resume</option>
+            </select>
             <button class="export-btn btn-pdf" onclick="exportPDF()">Export to PDF</button>
             <button class="export-btn btn-word" onclick="exportWord()">Export to Word</button>
         </div>
@@ -21,6 +45,10 @@
         <div class="form-group">
             <label>Full Name</label>
             <input type="text" id="input-name" oninput="updateCV()">
+            <label style="margin-top: 10px;">Initials/Avatar Text (for Modern Resume)</label>
+            <input type="text" id="input-initials" value="IF" oninput="updateCV()" placeholder="e.g. IF">
+            <label style="margin-top: 10px;">Subtitle / Job Title</label>
+            <input type="text" id="input-subtitle" value="Computer Engineering Graduate" oninput="updateCV()" placeholder="e.g. Computer Engineering Graduate">
         </div>
         <div class="form-group">
             <label>Contact Info (Location | LinkedIn | Email | Phone)</label>
@@ -40,12 +68,16 @@
         <h3>Work Experience</h3>
         <div id="experience-editor-container"></div>
         <button class="add-btn" onclick="addExperience()">+ Add Work Experience</button>
+        
+        <h3>Strengths (for Modern Resume)</h3>
+        <div id="strengths-editor-container"></div>
+        <button class="add-btn" onclick="addStrength()">+ Add Strength</button>
 
         <h3>Skills</h3>
         <div id="skills-editor-container"></div>
         <button class="add-btn" onclick="addSkill()">+ Add Skill Category</button>
 
-        <h3>Certifications</h3>
+        <h3>Certifications (Classic CV only)</h3>
         <div id="certs-editor-container"></div>
         <button class="add-btn" onclick="addCert()">+ Add Certification</button>
 
@@ -53,7 +85,7 @@
 
     <!-- PREVIEW PANE -->
     <div id="preview-pane">
-        <div id="cv-preview">
+        <div id="cv-preview" class="theme-classic">
             <!-- Dynamic Content Injected Here -->
         </div>
     </div>

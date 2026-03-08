@@ -1,8 +1,15 @@
 // --- STATE Initial Data (Based on Imam Fahrudin's CV) ---
 const cvData = {
     name: "Pria Solo",
+    initials: "IF",
+    subtitle: "Computer Engineering Graduate",
     contact: "Solo, Indonesia | fufufafa | fufufafa@gmail.com | 08xxxx001",
     summary: "Seorang pengamat politik bawah tanah yang saat ini bertransformasi menjadi **Kaskuser Terselubung**. Berpengalaman dalam **shitposting** strategis dan menganalisis konspirasi meme secara mendalam sejak era kejayaan warnet. Ahli dalam merangkai **kalimat tajam multi-tafsir**, menyebarkan opini anonim, dan konsisten me-roasting berbagai skandal dengan gaya bahasa fufufafa. Saat ini berfokus pada pelestarian tradisi perdebatan kusir di thread penuh kontroversi.",
+    strengths: [
+        { name: "Digital Investigation", description: "Kemampuan dalam forensic digital dan OSINT" },
+        { name: "Public Opinion", description: "Keterampilan menggiring opini publik yang sangat baik" },
+        { name: "Satirical Writing", description: "Pengalaman baik dalam penulisan dark comedy/sarkasme" }
+    ],
     education: [
         { degree: "S1 Teknik Pertrollan Digital", dates: "2010 – 2014", institution: "Universitas Gorong-Gorong Kaskus" }
     ],

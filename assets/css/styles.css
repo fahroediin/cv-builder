@@ -13,6 +13,87 @@ body {
     overflow: hidden;
 }
 
+/* Welcome Modal */
+#welcome-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none; /* Controlled by JS */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#welcome-modal .modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 800px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+#welcome-modal h2 { margin-bottom: 10px; color: #333; }
+#welcome-modal p { color: #666; margin-bottom: 30px; }
+
+.theme-options {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+.theme-card {
+    flex: 1;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-card:hover {
+    border-color: #007bff;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.2);
+}
+
+.theme-card h3 { border: none; margin-bottom: 10px; }
+.theme-card p { font-size: 14px; margin-bottom: 0; }
+
+.theme-preview {
+    height: 200px;
+    background: #eee;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.classic-preview::after {
+    content: '';
+    position: absolute;
+    top: 20%; left: 10%; right: 10%; height: 60%;
+    background: repeating-linear-gradient(to bottom, transparent, transparent 10px, #ccc 10px, #ccc 12px);
+}
+
+.modern-preview::after {
+    content: '';
+    position: absolute;
+    top: 10%; left: 10%; width: 40%; height: 80%;
+    background: repeating-linear-gradient(to bottom, transparent, transparent 10px, #ccc 10px, #ccc 12px);
+}
+.modern-preview::before {
+    content: '';
+    position: absolute;
+    top: 10%; right: 10%; width: 30%; height: 80%;
+    background: repeating-linear-gradient(to bottom, transparent, transparent 10px, #007bff 10px, #007bff 12px);
+    opacity: 0.5;
+}
+
 /* Application Layout */
 #editor-pane {
     width: 40%;
@@ -172,8 +253,8 @@ textarea {
     opacity: 0.9;
 }
 
-/* CV Content Styles (Matches exactly with requested format) */
-#cv-preview h1 {
+/* CV Content Styles (Theme: Classic) */
+.theme-classic h1 {
     text-align: center;
     font-size: 24px;
     margin-bottom: 5px;
@@ -181,13 +262,13 @@ textarea {
     margin-top: 0;
 }
 
-#cv-preview .contact-info {
+.theme-classic .contact-info {
     text-align: center;
     font-size: 14px;
     margin-bottom: 20px;
 }
 
-#cv-preview h2 {
+.theme-classic h2 {
     font-size: 16px;
     border-bottom: 1px solid #333;
     padding-bottom: 3px;
@@ -196,44 +277,232 @@ textarea {
     text-transform: uppercase;
 }
 
-#cv-preview .job-title {
+.theme-classic .job-title {
     font-weight: bold;
 }
 
-#cv-preview .job-dates {
+.theme-classic .job-dates {
     float: right;
     font-style: italic;
 }
 
-#cv-preview .job-header {
+.theme-classic .job-header {
     margin-bottom: 5px;
 }
 
-#cv-preview .job-header::after {
+.theme-classic .job-header::after {
     content: "";
     clear: both;
     display: table;
 }
 
-#cv-preview ul {
+.theme-classic ul {
     margin-top: 0;
     padding-left: 20px;
     margin-bottom: 15px;
 }
 
-#cv-preview li {
+.theme-classic li {
     margin-bottom: 5px;
 }
 
-#cv-preview p {
+.theme-classic p {
     margin-top: 5px;
     margin-bottom: 15px;
     text-align: justify;
 }
 
-#cv-preview .skills-list p {
+.theme-classic .skills-list p {
     margin-bottom: 8px;
 }
+
+/* CV Content Styles (Theme: Modern) */
+.theme-modern {
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.theme-modern .modern-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.theme-modern .header-text h1 {
+    font-size: 32px;
+    margin: 0 0 5px 0;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.theme-modern .header-text .subtitle {
+    font-size: 18px;
+    color: #007bff; /* Primary Blue from screenshot */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.theme-modern .contact-info-modern {
+    font-size: 12px;
+    color: #555;
+    font-weight: 500;
+}
+
+.theme-modern .contact-item {
+    margin-right: 5px;
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.theme-modern .avatar-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #007bff;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: normal;
+}
+
+.theme-modern .modern-body {
+    display: flex;
+    gap: 40px;
+}
+
+.theme-modern .modern-left {
+    flex: 2; /* 66% width approx */
+}
+
+.theme-modern .modern-right {
+    flex: 1.2; /* 33% width approx */
+}
+
+.theme-modern h2 {
+    font-size: 14px;
+    border-bottom: 2px solid #222;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.theme-modern .modern-section {
+    margin-bottom: 25px;
+}
+
+.theme-modern .summary-text p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #555;
+    text-align: justify;
+}
+
+/* Modern Left: Jobs */
+.theme-modern .modern-job {
+    margin-bottom: 20px;
+}
+
+.theme-modern .modern-job .job-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #222;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.theme-modern .modern-job .job-dates {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+.theme-modern .modern-job ul {
+    padding-left: 15px;
+    margin: 0;
+}
+
+.theme-modern .modern-job li {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 5px;
+}
+
+/* Modern Right: Education */
+.theme-modern .modern-ed {
+    margin-bottom: 15px;
+}
+
+.theme-modern .ed-degree {
+    font-size: 13px;
+    font-weight: bold;
+    color: #222;
+}
+
+.theme-modern .ed-school {
+    color: #007bff;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.theme-modern .ed-dates {
+    font-size: 11px;
+    color: #777;
+    margin-top: 3px;
+}
+
+/* Modern Right: Strengths */
+.theme-modern .strength-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.theme-modern .strength-icon {
+    width: 8px;
+    height: 8px;
+    background-color: #007bff;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.theme-modern .strength-content strong {
+    font-size: 12px;
+    display: block;
+    color: #222;
+    margin-bottom: 2px;
+}
+
+.theme-modern .strength-content p {
+    font-size: 11px;
+    color: #777;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Modern Right: Skills */
+.theme-modern .modern-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.theme-modern .skill-badge {
+    background-color: #f0f0f0;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: #444;
+    border-radius: 4px;
+    border-bottom: 2px solid #ddd;
+}
+
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {

@@ -1,12 +1,37 @@
+// --- THEME STATE ---
+let currentTheme = 'classic';
+
 // --- RENDER FUNCTIONS ---
 
 // Populate inputs initially
 function initEditor() {
     document.getElementById('input-name').value = cvData.name;
+    document.getElementById('input-initials').value = cvData.initials || "IF";
+    document.getElementById('input-subtitle').value = cvData.subtitle || "Computer Engineering Graduate";
     document.getElementById('input-contact').value = cvData.contact;
     document.getElementById('input-summary').value = cvData.summary;
 
     renderEditorLists();
+    
+    // Check if theme was previously selected internally, if not show modal
+    const modal = document.getElementById('welcome-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+    } else {
+        renderPreview();
+    }
+}
+
+function selectTheme(theme) {
+    document.getElementById('welcome-modal').style.display = 'none';
+    document.getElementById('theme-selector').value = theme;
+    changeThemeFromDropdown(theme);
+}
+
+function changeThemeFromDropdown(theme) {
+    currentTheme = theme;
+    const previewContainer = document.getElementById('cv-preview');
+    previewContainer.className = `theme-${theme}`; // sets theme-classic or theme-modern
     renderPreview();
 }
 
@@ -32,6 +57,18 @@ function renderEditorLists() {
             <textarea style="margin-bottom:0;" placeholder="Detail di sini (Gunakan *teks* untuk menebalkan kolom tertentu jika perlu, satu garis = satu poin bullet)" oninput="updateExperienceBullets(${idx}, this.value)">${exp.bullets.join('\n')}</textarea>
         </div>
     `).join('');
+
+    // Strengths
+    const strengthContainer = document.getElementById('strengths-editor-container');
+    if (strengthContainer && cvData.strengths) {
+        strengthContainer.innerHTML = cvData.strengths.map((str, idx) => `
+            <div class="item-container">
+                <button class="remove-btn" onclick="removeStrength(${idx})">X</button>
+                <input type="text" class="form-group" value="${str.name}" oninput="updateStrength(${idx}, 'name', this.value)" placeholder="Strength Name (e.g. Leadership)">
+                <textarea style="margin-bottom:0;" placeholder="Short description" oninput="updateStrength(${idx}, 'description', this.value)">${str.description}</textarea>
+            </div>
+        `).join('');
+    }
 
     // Skills
     const skillContainer = document.getElementById('skills-editor-container');
@@ -71,6 +108,14 @@ function parseMultiline(text) {
 }
 
 function renderPreview() {
+    if (currentTheme === 'modern') {
+        renderModernPreview();
+    } else {
+        renderClassicPreview();
+    }
+}
+
+function renderClassicPreview() {
     const preview = document.getElementById('cv-preview');
 
     let html = `
@@ -120,9 +165,127 @@ function renderPreview() {
     preview.innerHTML = html;
 }
 
+function renderModernPreview() {
+    const preview = document.getElementById('cv-preview');
+
+    // Parse contact info (assuming format: Location | Email | Phone etc)
+    const contacts = cvData.contact.split('|').map(c => c.trim()).filter(c => c);
+    const contactHtml = contacts.map(c => `<span class="contact-item">${c}</span>`).join(' &bull; ');
+
+    let html = `
+        <div class="modern-header">
+            <div class="header-text">
+                <h1>${cvData.name}</h1>
+                <div class="subtitle">${cvData.subtitle || ''}</div>
+                <div class="contact-info-modern">${contactHtml}</div>
+            </div>
+            <div class="header-avatar">
+                <div class="avatar-circle">${cvData.initials || 'IF'}</div>
+            </div>
+        </div>
+
+        <div class="modern-body">
+            <!-- Left Column -->
+            <div class="modern-left">
+                <div class="modern-section">
+                    <h2>SUMMARY</h2>
+                    <div class="summary-text">${parseMultiline(cvData.summary)}</div>
+                </div>
+
+                <div class="modern-section">
+                    <h2>EXPERIENCE</h2>
+    `;
+
+    cvData.experience.forEach(exp => {
+        html += `
+                    <div class="modern-job">
+                        <div class="job-header">
+                            <span class="job-title">${parseText(exp.title)}</span>
+                        </div>
+                        <div class="job-dates">${exp.dates}</div>
+                        <div class="job-desc">
+                            <ul>
+                                ${exp.bullets.map(b => `<li>${parseText(b)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>`;
+    });
+
+    html += `
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="modern-right">
+                <div class="modern-section">
+                    <h2>EDUCATION</h2>
+    `;
+
+    cvData.education.forEach(ed => {
+        html += `
+                    <div class="modern-ed">
+                        <div class="ed-degree">${parseText(ed.degree)}</div>
+                        <div class="ed-school">${parseText(ed.institution)}</div>
+                        <div class="ed-dates">${ed.dates}</div>
+                    </div>`;
+    });
+
+    html += `
+                </div>
+
+                <div class="modern-section">
+                    <h2>STRENGTHS</h2>
+                    <div class="strengths-list">
+    `;
+
+    if (cvData.strengths) {
+        cvData.strengths.forEach(str => {
+            html += `
+                        <div class="strength-item">
+                            <div class="strength-icon"></div>
+                            <div class="strength-content">
+                                <strong>${str.name}</strong>
+                                <p>${str.description}</p>
+                            </div>
+                        </div>`;
+        });
+    }
+
+    html += `
+                    </div>
+                </div>
+
+                <div class="modern-section">
+                    <h2>SKILLS</h2>
+                    <div class="modern-skills">
+    `;
+
+    // Flatten skills for badges
+    let allSkills = [];
+    cvData.skills.forEach(sk => {
+        const parts = sk.details.split(',').map(s => s.trim()).filter(s => s);
+        allSkills = allSkills.concat(parts);
+    });
+
+    allSkills.forEach(s => {
+        html += `<span class="skill-badge">${s}</span>`;
+    });
+
+    html += `
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    preview.innerHTML = html;
+}
+
 // --- UPDATE HANDLERS ---
 function updateCV() {
     cvData.name = document.getElementById('input-name').value;
+    cvData.initials = document.getElementById('input-initials').value;
+    cvData.subtitle = document.getElementById('input-subtitle').value;
     cvData.contact = document.getElementById('input-contact').value;
     cvData.summary = document.getElementById('input-summary').value;
     renderPreview();
@@ -138,6 +301,11 @@ function updateExperience(idx, field, value) { cvData.experience[idx][field] = v
 function updateExperienceBullets(idx, value) { cvData.experience[idx].bullets = value.split('\n').filter(b => b.trim() !== ''); renderPreview(); }
 function addExperience() { cvData.experience.push({ title: "", dates: "", bullets: [] }); renderEditorLists(); renderPreview(); }
 function removeExperience(idx) { cvData.experience.splice(idx, 1); renderEditorLists(); renderPreview(); }
+
+// Strengths Updates
+function updateStrength(idx, field, value) { if(cvData.strengths) cvData.strengths[idx][field] = value; renderPreview(); }
+function addStrength() { if(!cvData.strengths) cvData.strengths = []; cvData.strengths.push({ name: "", description: "" }); renderEditorLists(); renderPreview(); }
+function removeStrength(idx) { if(cvData.strengths) cvData.strengths.splice(idx, 1); renderEditorLists(); renderPreview(); }
 
 // Skills Updates
 function updateSkill(idx, field, value) { cvData.skills[idx][field] = value; renderPreview(); }
