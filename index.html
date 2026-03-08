@@ -243,6 +243,46 @@
             margin-bottom: 8px;
         }
 
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                display: block;
+                height: auto;
+                overflow: auto;
+            }
+
+            #editor-pane {
+                width: 100%;
+                height: auto;
+                overflow-y: visible;
+                border-right: none;
+                border-bottom: 5px solid #007bff;
+            }
+
+            #preview-pane {
+                width: 100%;
+                height: auto;
+                overflow-y: visible;
+                padding: 15px;
+            }
+
+            #cv-preview {
+                width: 100%;
+                min-height: auto;
+                padding: 15px;
+            }
+
+            .toolbar {
+                top: 0;
+                padding-top: 10px;
+            }
+            
+            .export-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
         /* Print Media Query */
         @media print {
             @page {
