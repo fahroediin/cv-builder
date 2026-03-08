@@ -15,16 +15,42 @@ function initEditor() {
     
     // Check if theme was previously selected internally, if not show modal
     const modal = document.getElementById('welcome-modal');
-    if (modal) {
+    if (modal && modal.style.display !== 'none') {
         modal.style.display = 'flex';
     } else {
         renderPreview();
     }
 }
 
+function clearDummyData() {
+    cvData.name = "";
+    cvData.initials = "";
+    cvData.subtitle = "";
+    cvData.contact = "";
+    cvData.summary = "";
+    cvData.strengths = [];
+    cvData.education = [];
+    cvData.experience = [];
+    cvData.skills = [];
+    cvData.certifications = [];
+
+    // Clear inputs
+    document.getElementById('input-name').value = "";
+    document.getElementById('input-initials').value = "";
+    document.getElementById('input-subtitle').value = "";
+    document.getElementById('input-contact').value = "";
+    document.getElementById('input-summary').value = "";
+
+    renderEditorLists();
+}
+
 function selectTheme(theme) {
     document.getElementById('welcome-modal').style.display = 'none';
     document.getElementById('theme-selector').value = theme;
+    
+    // Clear dummy data when starting fresh
+    clearDummyData();
+
     changeThemeFromDropdown(theme);
 }
 
