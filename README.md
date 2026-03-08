@@ -13,7 +13,7 @@ Sebuah alat berbasis Web (*Single Page Application*) yang dirancang khusus untuk
 
 ## 🚀 Cara Menggunakan
 
-1. Temukan dan klik ganda (`double-click`) file `cv_builder.html`.
+1. Temukan dan klik ganda (`double-click`) file `index.html`.
 2. Halaman akan otomatis terbuka di Web Browser default Anda (seperti Google Chrome atau Microsoft Edge).
 3. Isi atau ubah data Pribadi, Summary, Pendidikan, dan Pengalaman Kerja Anda pada panel Editor di sebelah kiri.
 4. Gunakan gaya penulisan sederhana (misal, `**Product Manager**`).
@@ -23,4 +23,4 @@ Sebuah alat berbasis Web (*Single Page Application*) yang dirancang khusus untuk
 
 ## 🛠️ Modifikasi Tingkat Lanjut
 
-Jika Anda ingin mengubah skema warna, jenis font, atau *layout* bawaan, Anda cukup membuka file `cv_builder.html` tersebut melalui Text Editor (misalnya Notepad atau VSCode), lalu ubah kode di dalam blok `<style>` di bagian atas dokumen. Ini sangat mudah disesuaikan.
+Jika Anda ingin mengubah skema warna, jenis font, atau *layout* bawaan, Anda cukup membuka file `index.html` tersebut melalui Text Editor (misalnya Notepad atau VSCode), lalu ubah kode di dalam blok `<style>` di bagian atas dokumen. Ini sangat mudah disesuaikan.
