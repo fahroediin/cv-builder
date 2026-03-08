@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive CV Builder</title>
+    <style>
+        /* Base Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; display: flex; height: 100vh; overflow: hidden; }
+
+        /* Application Layout */
+        #editor-pane { width: 40%; background: #ffffff; border-right: 1px solid #ddd; padding: 20px; overflow-y: auto; box-shadow: 2px 0 5px rgba(0,0,0,0.05); z-index: 10; }
+        #preview-pane { width: 60%; padding: 40px; overflow-y: auto; background: #e9ecef; }
+        
+        /* A4 Paper styling for Preview */
+        #cv-preview { 
+            background: white; 
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* Minimum A4 height, expands if content is longer */
+            height: max-content;
+            margin: 0 auto;
+            padding: 30px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            font-family: Arial, sans-serif; 
+            line-height: 1.5; 
+            color: #222;
+            word-wrap: break-word;
+        }
+
+        /* Editor Styles */
+        h3 { margin-bottom: 15px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #555; }
+        input[type="text"], textarea { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; transition: border-color 0.2s; }
+        input[type="text"]:focus, textarea:focus { border-color: #007bff; outline: none; }
+        textarea { resize: vertical; min-height: 80px; }
+        
+        /* Section Items (Lists) */
+        .item-container { background: #f8f9fa; border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 4px; position: relative; }
+        .remove-btn { position: absolute; top: 10px; right: 10px; background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+        .remove-btn:hover { background: #c82333; }
+        .add-btn { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; margin-bottom: 20px; display: block; width: 100%; font-weight: bold; }
+        .add-btn:hover { background: #218838; }
+
+        /* Toolbar */
+        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: white; padding-bottom: 10px; z-index: 20; border-bottom: 1px solid #eee; }
+        .export-btn { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; color: white; transition: opacity 0.2s; }
+        .btn-pdf { background-color: #007bff; }
+        .btn-word { background-color: #17a2b8; }
+        .export-btn:hover { opacity: 0.9; }
+
+        /* CV Content Styles (Matches exactly with requested format) */
+        #cv-preview h1 { text-align: center; font-size: 24px; margin-bottom: 5px; text-transform: uppercase; margin-top: 0; }
+        #cv-preview .contact-info { text-align: center; font-size: 14px; margin-bottom: 20px; }
+        #cv-preview h2 { font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 3px; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; }
+        #cv-preview .job-title { font-weight: bold; }
+        #cv-preview .job-dates { float: right; font-style: italic; }
+        #cv-preview .job-header { margin-bottom: 5px; }
+        #cv-preview .job-header::after { content: ""; clear: both; display: table; }
+        #cv-preview ul { margin-top: 0; padding-left: 20px; margin-bottom: 15px; }
+        #cv-preview li { margin-bottom: 5px; }
+        #cv-preview p { margin-top: 5px; margin-bottom: 15px; text-align: justify; }
+        #cv-preview .skills-list p { margin-bottom: 8px; }
+
+        /* Print Media Query */
+        @media print {
+            @page { 
+                /* Mengatur margin atas-bawah dan kanan-kiri yang stabil untuk paper A4 */
+                margin: 20mm 15mm; 
+                size: a4 portrait;
+            }
+            body { 
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+            #editor-pane { display: none; }
+            #preview-pane { width: 100%; padding: 0; background: none; display: block; overflow: visible; }
+            #cv-preview { 
+                width: 100%; 
+                margin: 0;
+                padding: 0 10px; /* Sedikit padding dalam untuk teks */
+                box-shadow: none; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- EDITOR PANE -->
+    <div id="editor-pane">
+        <div class="toolbar">
+            <button class="export-btn btn-pdf" onclick="exportPDF()">Export to PDF</button>
+            <button class="export-btn btn-word" onclick="exportWord()">Export to Word</button>
+        </div>
+
+        <h3>Personal Information</h3>
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="input-name" oninput="updateCV()">
+        </div>
+        <div class="form-group">
+            <label>Contact Info (Location | LinkedIn | Email | Phone)</label>
+            <input type="text" id="input-contact" oninput="updateCV()">
+        </div>
+
+        <h3>Professional Summary</h3>
+        <div class="form-group">
+            <label>Summary (Gunakan *teks* atau **teks** untuk menebalkan kata, enter untuk paragraf baru)</label>
+            <textarea id="input-summary" oninput="updateCV()"></textarea>
+        </div>
+
+        <h3>Education</h3>
+        <div id="education-editor-container"></div>
+        <button class="add-btn" onclick="addEducation()">+ Add Education</button>
+
+        <h3>Work Experience</h3>
+        <div id="experience-editor-container"></div>
+        <button class="add-btn" onclick="addExperience()">+ Add Work Experience</button>
+
+        <h3>Skills</h3>
+        <div id="skills-editor-container"></div>
+        <button class="add-btn" onclick="addSkill()">+ Add Skill Category</button>
+
+        <h3>Certifications</h3>
+        <div id="certs-editor-container"></div>
+        <button class="add-btn" onclick="addCert()">+ Add Certification</button>
+
+    </div>
+
+    <!-- PREVIEW PANE -->
+    <div id="preview-pane">
+        <div id="cv-preview">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+    </div>
+
+    <script>
+        // --- STATE Initial Data (Based on Imam Fahrudin's CV) ---
+        const cvData = {
+            name: "IMAM FAHRUDIN",
+            contact: "Jakarta, Indonesia | LinkedIn | imam.fahrudin.work@gmail.com | 081568218009",
+            summary: "A Backend Engineer turned Head of Business Analyst with a strong technical foundation in OutSystems development. Currently **pioneering** a foundational BA division from the ground up during a critical management transformation phase. Expert in bridging the gap between high-level business goals and technical execution by **architecting** solutions rather than just gathering requirements. Focused on establishing scalable frameworks, standardizing data flows, and driving market-product research.",
+            education: [
+                { degree: "Bachelor of Engineering in Information Technology", dates: "2019 – 2023", institution: "STMIK Komputama Majenang" }
+            ],
+            experience: [
+                {
+                    title: "Head of Business Analyst", dates: "Jan 2026 – Present",
+                    bullets: [
+                        "**Pioneered** the First BA Division: Established the foundational framework and Standard Operating Procedures (SOPs) for a newly created Business Analysis division from scratch.",
+                        "**Strategic Market & Product Research**: Led comprehensive research for a reconciliation application and formulated targeted sales strategies for mid-level management demographics.",
+                        "**Technical Architecture**: **Resolved** critical data discrepancy issues between internal and external systems and **Architected** standardized data flows.",
+                        "**Cross-Functional Leadership**: **Translated** high-level business goals into precise, actionable technical requirements, ensuring seamless collaboration and Stakeholder Management with the development team."
+                    ]
+                },
+                {
+                    title: "Associate Business Analyst", dates: "Nov 2025 – Feb 2026",
+                    bullets: [
+                        "**Strategic Validation**: Partnered with the Product Head to validate the project pipeline, ensuring resources were focused on high-impact initiatives.",
+                        "**Rapid Prototyping**: Built Proof of Concepts (POCs) alongside UI/UX and Engineering teams to accelerate feasibility checks and reduce development risks.",
+                        "**Requirement Engineering**: **Translated** complex business logic into testable User Stories using Gherkin and Event Storming techniques.",
+                        "**Leadership & Mentoring**: Led and mentored BA Interns on documentation standards, ensuring 100% alignment with project delivery timelines."
+                    ]
+                },
+                {
+                    title: "Junior Business Analyst Trainee", dates: "Oct 2025 – Oct 2025",
+                    bullets: [
+                        "**Documentation Excellence**: Specialized in writing User Stories and Acceptance Criteria using Gherkin best practices.",
+                        "**Process Mapping**: Implemented Event Sourcing and Event Storming techniques for precise business process modeling."
+                    ]
+                },
+                {
+                    title: "Associate OutSystems Developer", dates: "May 2025 – Oct 2025",
+                    bullets: [
+                        "**Product Development**: Contributed to the development of a Loan Origination System (LOS) and provided technical feedback to enhance feature effectiveness.",
+                        "**Stakeholder Management**: Actively communicated with stakeholders to clarify logic bugs, initiating a transition from pure development to business analysis."
+                    ]
+                },
+                {
+                    title: "Junior OutSystems Developer", dates: "May 2024 – May 2025",
+                    bullets: [
+                        "**Full-Stack Execution**: Developed Reactive and Mobile applications, designed data models, and integrated REST services.",
+                        "**Technical Training**: Acted as a Mentor and Trainer for citizen developers, guiding them through logic design and platform best practices."
+                    ]
+                },
+                {
+                    title: "Junior OutSystems Developer (Internship)", dates: "Feb 2024 – May 2024",
+                    bullets: [
+                        "**Feature Engineering**: Built secure authentication features and integrated AWS S3 cloud storage for document management.",
+                        "**Data Visualization**: Developed reactive dashboards with dynamic configurations to improve reporting efficiency."
+                    ]
+                }
+            ],
+            skills: [
+                { category: "Analysis", details: "Business Process Mapping (Event Storming), Requirement Engineering (Gherkin), Market Research, SOP Development." },
+                { category: "Technical", details: "OutSystems (Reactive, Mobile, Web), Backend Development, API Development (REST/Swagger), AWS S3 Integration." },
+                { category: "Soft Skills", details: "Strategic Leadership, Stakeholder Management, Cross-functional Collaboration, Mentoring." }
+            ],
+            certifications: [
+                "**Associate Developer (O11)** – OutSystems (Oct 2025)",
+                "**Product Management Professional Certificate** – Aha! (Jun 2025)",
+                "**Product Management First Steps** – IIBA (Jun 2025)",
+                "**Product Management: Customer Development** – IIBA (Jun 2025)",
+                "**AI in Project Management** – LinkedIn Learning (May 2025)",
+                "**Agile Project Leadership** – LinkedIn Learning (May 2025)"
+            ]
+        };
+
+        // --- RENDER FUNCTIONS ---
+        
+        // Populate inputs initially
+        function initEditor() {
+            document.getElementById('input-name').value = cvData.name;
+            document.getElementById('input-contact').value = cvData.contact;
+            document.getElementById('input-summary').value = cvData.summary;
+            
+            renderEditorLists();
+            renderPreview();
+        }
+
+        function renderEditorLists() {
+            // Education
+            const edContainer = document.getElementById('education-editor-container');
+            edContainer.innerHTML = cvData.education.map((ed, idx) => `
+                <div class="item-container">
+                    <button class="remove-btn" onclick="removeEducation(${idx})">X</button>
+                    <input type="text" class="form-group" value="${ed.degree}" oninput="updateEducation(${idx}, 'degree', this.value)" placeholder="Degree/Title">
+                    <input type="text" class="form-group" value="${ed.dates}" oninput="updateEducation(${idx}, 'dates', this.value)" placeholder="Dates (e.g. 2019 - 2023)">
+                    <input type="text" style="margin-bottom:0;" value="${ed.institution}" oninput="updateEducation(${idx}, 'institution', this.value)" placeholder="Institution">
+                </div>
+            `).join('');
+
+            // Experience
+            const expContainer = document.getElementById('experience-editor-container');
+            expContainer.innerHTML = cvData.experience.map((exp, idx) => `
+                <div class="item-container">
+                    <button class="remove-btn" onclick="removeExperience(${idx})">X</button>
+                    <input type="text" class="form-group" value="${exp.title}" oninput="updateExperience(${idx}, 'title', this.value)" placeholder="Job Title">
+                    <input type="text" class="form-group" value="${exp.dates}" oninput="updateExperience(${idx}, 'dates', this.value)" placeholder="Dates (e.g. Jan 2026 - Present)">
+                    <textarea style="margin-bottom:0;" placeholder="Detail di sini (Gunakan *teks* untuk menebalkan kolom tertentu jika perlu, satu garis = satu poin bullet)" oninput="updateExperienceBullets(${idx}, this.value)">${exp.bullets.join('\n')}</textarea>
+                </div>
+            `).join('');
+
+            // Skills
+            const skillContainer = document.getElementById('skills-editor-container');
+            skillContainer.innerHTML = cvData.skills.map((sk, idx) => `
+                <div class="item-container">
+                    <button class="remove-btn" onclick="removeSkill(${idx})">X</button>
+                    <input type="text" class="form-group" value="${sk.category}" oninput="updateSkill(${idx}, 'category', this.value)" placeholder="Category (e.g. Technical)">
+                    <textarea style="margin-bottom:0;" placeholder="Comma separated details" oninput="updateSkill(${idx}, 'details', this.value)">${sk.details}</textarea>
+                </div>
+            `).join('');
+
+            // Certifications
+            const certContainer = document.getElementById('certs-editor-container');
+            certContainer.innerHTML = cvData.certifications.map((cert, idx) => `
+                <div class="item-container" style="display:flex; gap:10px;">
+                    <button class="remove-btn" style="position:static;" onclick="removeCert(${idx})">X</button>
+                    <input type="text" style="flex:1; margin-bottom:0;" value="${cert.replace(/"/g, '&quot;')}" oninput="updateCert(${idx}, this.value)">
+                </div>
+            `).join('');
+        }
+
+        // Preview rendering logic
+        function parseText(text) {
+            if (!text) return "";
+            // Replace **text** or *text* with <strong>text</strong>
+            let parsed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            parsed = parsed.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            return parsed;
+        }
+
+        function parseMultiline(text) {
+            if (!text) return "";
+            return text.split('\n')
+                .filter(p => p.trim() !== '')
+                .map(p => `<p>${parseText(p)}</p>`)
+                .join('');
+        }
+
+        function renderPreview() {
+            const preview = document.getElementById('cv-preview');
+            
+            let html = `
+                <h1>${cvData.name}</h1>
+                <div class="contact-info">${cvData.contact}</div>
+                
+                <h2>PROFESSIONAL SUMMARY</h2>
+                ${parseMultiline(cvData.summary)}
+                
+                <h2>EDUCATION</h2>
+            `;
+
+            cvData.education.forEach(ed => {
+                html += `
+                <div class="job-header">
+                    <span class="job-title">${parseText(ed.degree)}</span>
+                    <span class="job-dates">${ed.dates}</span>
+                    <br/>
+                    <span>${parseText(ed.institution)}</span>
+                </div>`;
+            });
+
+            html += `<h2>WORK EXPERIENCE</h2>`;
+            cvData.experience.forEach(exp => {
+                html += `
+                <div class="job-header">
+                    <span class="job-title">${parseText(exp.title)}</span>
+                    <span class="job-dates">${exp.dates}</span>
+                </div>
+                <ul>
+                    ${exp.bullets.map(b => `<li>${parseText(b)}</li>`).join('')}
+                </ul>`;
+            });
+
+            html += `<h2>SKILLS</h2><div class="skills-list">`;
+            cvData.skills.forEach(sk => {
+                html += `<p><strong>${sk.category}:</strong> ${parseText(sk.details)}</p>`;
+            });
+            html += `</div>`;
+
+            html += `<h2>CERTIFICATIONS</h2><ul>`;
+            cvData.certifications.forEach(cert => {
+                html += `<li>${parseText(cert)}</li>`;
+            });
+            html += `</ul>`;
+
+            preview.innerHTML = html;
+        }
+
+        // --- UPDATE HANDLERS ---
+        function updateCV() {
+            cvData.name = document.getElementById('input-name').value;
+            cvData.contact = document.getElementById('input-contact').value;
+            cvData.summary = document.getElementById('input-summary').value;
+            renderPreview();
+        }
+
+        // Education Updates
+        function updateEducation(idx, field, value) { cvData.education[idx][field] = value; renderPreview(); }
+        function addEducation() { cvData.education.push({ degree: "", dates: "", institution: "" }); renderEditorLists(); renderPreview(); }
+        function removeEducation(idx) { cvData.education.splice(idx, 1); renderEditorLists(); renderPreview(); }
+
+        // Experience Updates
+        function updateExperience(idx, field, value) { cvData.experience[idx][field] = value; renderPreview(); }
+        function updateExperienceBullets(idx, value) { cvData.experience[idx].bullets = value.split('\n').filter(b => b.trim() !== ''); renderPreview(); }
+        function addExperience() { cvData.experience.push({ title: "", dates: "", bullets: [] }); renderEditorLists(); renderPreview(); }
+        function removeExperience(idx) { cvData.experience.splice(idx, 1); renderEditorLists(); renderPreview(); }
+
+        // Skills Updates
+        function updateSkill(idx, field, value) { cvData.skills[idx][field] = value; renderPreview(); }
+        function addSkill() { cvData.skills.push({ category: "", details: "" }); renderEditorLists(); renderPreview(); }
+        function removeSkill(idx) { cvData.skills.splice(idx, 1); renderEditorLists(); renderPreview(); }
+
+        // Certification Updates
+        function updateCert(idx, value) { cvData.certifications[idx] = value; renderPreview(); }
+        function addCert() { cvData.certifications.push(""); renderEditorLists(); renderPreview(); }
+        function removeCert(idx) { cvData.certifications.splice(idx, 1); renderEditorLists(); renderPreview(); }
+
+
+        // --- EXPORT TO PDF ---
+        function exportPDF() {
+            window.print();
+        }
+
+        // --- EXPORT TO WORD ---
+        function exportWord() {
+            const previewHTML = document.getElementById('cv-preview').innerHTML;
+            
+            // Basic styles for Word doc preservation
+            const styles = `
+                <style>
+                    body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #000; }
+                    h1 { text-align: center; font-size: 16pt; margin-bottom: 5px; text-transform: uppercase; }
+                    .contact-info { text-align: center; font-size: 10pt; margin-bottom: 15pt; }
+                    h2 { font-size: 12pt; border-bottom: 1px solid #000; padding-bottom: 2pt; margin-top: 15pt; margin-bottom: 8pt; text-transform: uppercase; }
+                    .job-title { font-weight: bold; }
+                    .job-dates { float: right; font-style: italic; text-align: right; }
+                    .job-header { margin-bottom: 4pt; clear: both; overflow: hidden; }
+                    ul { margin-top: 0; padding-left: 15pt; margin-bottom: 10pt; }
+                    li { margin-bottom: 3pt; }
+                    p { margin-top: 3pt; margin-bottom: 10pt; text-align: justify; }
+                </style>
+            `;
+
+            const documentContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'>${styles}</head>
+                <body>${previewHTML}</body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff', documentContent], {
+                type: 'application/msword'
+            });
+            const url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(documentContent);
+            const downloadLink = document.createElement("a");
+            document.body.appendChild(downloadLink);
+            downloadLink.href = url;
+            downloadLink.download = `${cvData.name.replace(/ /g, '_')}_CV.doc`;
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        // Initialize App
+        initEditor();
+
+    </script>
+</body>
+</html>
