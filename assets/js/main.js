@@ -335,21 +335,43 @@ function exportPDF() {
 
 // --- EXPORT TO WORD ---
 function exportWord() {
-    const previewHTML = document.getElementById('cv-preview').innerHTML;
+    const previewElement = document.getElementById('cv-preview');
+    const previewHTML = previewElement.outerHTML;
 
     // Basic styles for Word doc preservation
     const styles = `
         <style>
             body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #000; }
-            h1 { text-align: center; font-size: 16pt; margin-bottom: 5px; text-transform: uppercase; }
-            .contact-info { text-align: center; font-size: 10pt; margin-bottom: 15pt; }
-            h2 { font-size: 12pt; border-bottom: 1px solid #000; padding-bottom: 2pt; margin-top: 15pt; margin-bottom: 8pt; text-transform: uppercase; }
-            .job-title { font-weight: bold; }
-            .job-dates { float: right; font-style: italic; text-align: right; }
-            .job-header { margin-bottom: 4pt; clear: both; overflow: hidden; }
-            ul { margin-top: 0; padding-left: 15pt; margin-bottom: 10pt; }
-            li { margin-bottom: 3pt; }
-            p { margin-top: 3pt; margin-bottom: 10pt; text-align: justify; }
+            
+            /* Classic Theme Word Styles */
+            .theme-classic h1 { text-align: center; font-size: 16pt; margin-bottom: 5px; text-transform: uppercase; }
+            .theme-classic .contact-info { text-align: center; font-size: 10pt; margin-bottom: 15pt; }
+            .theme-classic h2 { font-size: 12pt; border-bottom: 1px solid #000; padding-bottom: 2pt; margin-top: 15pt; margin-bottom: 8pt; text-transform: uppercase; }
+            .theme-classic .job-title { font-weight: bold; }
+            .theme-classic .job-dates { float: right; font-style: italic; text-align: right; }
+            .theme-classic .job-header { margin-bottom: 4pt; clear: both; overflow: hidden; }
+            .theme-classic ul { margin-top: 0; padding-left: 15pt; margin-bottom: 10pt; }
+            .theme-classic li { margin-bottom: 3pt; }
+            .theme-classic p { margin-top: 3pt; margin-bottom: 10pt; text-align: justify; }
+
+            /* Modern Theme Word Styles */
+            .theme-modern { font-family: 'Segoe UI', Arial, sans-serif; color: #333; }
+            .theme-modern .modern-header { margin-bottom: 20pt; border-bottom: 2px solid #007bff; padding-bottom: 15pt; }
+            .theme-modern .header-text h1 { font-size: 24pt; margin: 0 0 5pt 0; text-transform: uppercase; color: #111; }
+            .theme-modern .header-text .subtitle { font-size: 14pt; color: #007bff; font-weight: bold; margin-bottom: 10pt; }
+            .theme-modern .contact-info-modern { font-size: 9pt; color: #555; }
+            .theme-modern h2 { font-size: 12pt; border-bottom: 2pt solid #222; padding-bottom: 5pt; margin-top: 15pt; margin-bottom: 10pt; text-transform: uppercase; }
+            .theme-modern .modern-job { margin-bottom: 15pt; }
+            .theme-modern .job-title { font-weight: bold; color: #222; }
+            .theme-modern .job-dates { color: #777; font-size: 10pt; }
+            .theme-modern ul { padding-left: 15pt; margin-top: 5pt; }
+            .theme-modern li { margin-bottom: 3pt; font-size: 10pt; color: #555; }
+            .theme-modern .ed-degree { font-weight: bold; color: #222; }
+            .theme-modern .ed-school { color: #007bff; font-weight: bold; }
+            .theme-modern .ed-dates { color: #777; font-size: 9pt; }
+            .theme-modern .strength-content strong { font-weight: bold; color: #222; }
+            .theme-modern .strength-content p { color: #555; font-size: 9pt; margin-top: 2pt; margin-bottom: 8pt; }
+            .theme-modern .skill-badge { background-color: #f0f0f0; padding: 2pt 5pt; font-size: 9pt; border: 1px solid #ddd; margin-right: 5pt; display: inline-block; }
         </style>
     `;
 
