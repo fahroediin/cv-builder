@@ -1,91 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive CV Builder</title>
     <style>
         /* Base Reset */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; display: flex; height: 100vh; overflow: hidden; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
         /* Application Layout */
-        #editor-pane { width: 40%; background: #ffffff; border-right: 1px solid #ddd; padding: 20px; overflow-y: auto; box-shadow: 2px 0 5px rgba(0,0,0,0.05); z-index: 10; }
-        #preview-pane { width: 60%; padding: 40px; overflow-y: auto; background: #e9ecef; }
-        
+        #editor-pane {
+            width: 40%;
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        #preview-pane {
+            width: 60%;
+            padding: 40px;
+            overflow-y: auto;
+            background: #e9ecef;
+        }
+
         /* A4 Paper styling for Preview */
-        #cv-preview { 
-            background: white; 
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* Minimum A4 height, expands if content is longer */
+        #cv-preview {
+            background: white;
+            width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* Minimum A4 height, expands if content is longer */
             height: max-content;
             margin: 0 auto;
-            padding: 30px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-            font-family: Arial, sans-serif; 
-            line-height: 1.5; 
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
             color: #222;
             word-wrap: break-word;
         }
 
         /* Editor Styles */
-        h3 { margin-bottom: 15px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #555; }
-        input[type="text"], textarea { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 14px; transition: border-color 0.2s; }
-        input[type="text"]:focus, textarea:focus { border-color: #007bff; outline: none; }
-        textarea { resize: vertical; min-height: 80px; }
-        
+        h3 {
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
         /* Section Items (Lists) */
-        .item-container { background: #f8f9fa; border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 4px; position: relative; }
-        .remove-btn { position: absolute; top: 10px; right: 10px; background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
-        .remove-btn:hover { background: #c82333; }
-        .add-btn { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; margin-bottom: 20px; display: block; width: 100%; font-weight: bold; }
-        .add-btn:hover { background: #218838; }
+        .item-container {
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        .add-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: block;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            background: #218838;
+        }
 
         /* Toolbar */
-        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: white; padding-bottom: 10px; z-index: 20; border-bottom: 1px solid #eee; }
-        .export-btn { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; color: white; transition: opacity 0.2s; }
-        .btn-pdf { background-color: #007bff; }
-        .btn-word { background-color: #17a2b8; }
-        .export-btn:hover { opacity: 0.9; }
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background: white;
+            padding-bottom: 10px;
+            z-index: 20;
+            border-bottom: 1px solid #eee;
+        }
+
+        .export-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn-pdf {
+            background-color: #007bff;
+        }
+
+        .btn-word {
+            background-color: #17a2b8;
+        }
+
+        .export-btn:hover {
+            opacity: 0.9;
+        }
 
         /* CV Content Styles (Matches exactly with requested format) */
-        #cv-preview h1 { text-align: center; font-size: 24px; margin-bottom: 5px; text-transform: uppercase; margin-top: 0; }
-        #cv-preview .contact-info { text-align: center; font-size: 14px; margin-bottom: 20px; }
-        #cv-preview h2 { font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 3px; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; }
-        #cv-preview .job-title { font-weight: bold; }
-        #cv-preview .job-dates { float: right; font-style: italic; }
-        #cv-preview .job-header { margin-bottom: 5px; }
-        #cv-preview .job-header::after { content: ""; clear: both; display: table; }
-        #cv-preview ul { margin-top: 0; padding-left: 20px; margin-bottom: 15px; }
-        #cv-preview li { margin-bottom: 5px; }
-        #cv-preview p { margin-top: 5px; margin-bottom: 15px; text-align: justify; }
-        #cv-preview .skills-list p { margin-bottom: 8px; }
+        #cv-preview h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        #cv-preview .contact-info {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        #cv-preview h2 {
+            font-size: 16px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 3px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        #cv-preview .job-title {
+            font-weight: bold;
+        }
+
+        #cv-preview .job-dates {
+            float: right;
+            font-style: italic;
+        }
+
+        #cv-preview .job-header {
+            margin-bottom: 5px;
+        }
+
+        #cv-preview .job-header::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        #cv-preview ul {
+            margin-top: 0;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        #cv-preview li {
+            margin-bottom: 5px;
+        }
+
+        #cv-preview p {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        #cv-preview .skills-list p {
+            margin-bottom: 8px;
+        }
 
         /* Print Media Query */
         @media print {
-            @page { 
+            @page {
                 /* Mengatur margin atas-bawah dan kanan-kiri yang stabil untuk paper A4 */
-                margin: 20mm 15mm; 
+                margin: 20mm 15mm;
                 size: a4 portrait;
             }
-            body { 
+
+            body {
                 margin: 0;
                 padding: 0;
                 background: white;
             }
-            #editor-pane { display: none; }
-            #preview-pane { width: 100%; padding: 0; background: none; display: block; overflow: visible; }
-            #cv-preview { 
-                width: 100%; 
+
+            #editor-pane {
+                display: none;
+            }
+
+            #preview-pane {
+                width: 100%;
+                padding: 0;
+                background: none;
+                display: block;
+                overflow: visible;
+            }
+
+            #cv-preview {
+                width: 100%;
                 margin: 0;
-                padding: 0 10px; /* Sedikit padding dalam untuk teks */
-                box-shadow: none; 
+                padding: 0 10px;
+                /* Sedikit padding dalam untuk teks */
+                box-shadow: none;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- EDITOR PANE -->
@@ -140,7 +334,7 @@
         // --- STATE Initial Data (Based on Imam Fahrudin's CV) ---
         const cvData = {
             name: "IMAM FAHRUDIN",
-            contact: "Jakarta, Indonesia | LinkedIn | imam.fahrudin.work@gmail.com | 081568218009",
+            contact: "Jakarta, Indonesia | fahroedin | fahrudin@ppu.co.id | 08xxxx009",
             summary: "A Backend Engineer turned Head of Business Analyst with a strong technical foundation in OutSystems development. Currently **pioneering** a foundational BA division from the ground up during a critical management transformation phase. Expert in bridging the gap between high-level business goals and technical execution by **architecting** solutions rather than just gathering requirements. Focused on establishing scalable frameworks, standardizing data flows, and driving market-product research.",
             education: [
                 { degree: "Bachelor of Engineering in Information Technology", dates: "2019 – 2023", institution: "STMIK Komputama Majenang" }
@@ -209,13 +403,13 @@
         };
 
         // --- RENDER FUNCTIONS ---
-        
+
         // Populate inputs initially
         function initEditor() {
             document.getElementById('input-name').value = cvData.name;
             document.getElementById('input-contact').value = cvData.contact;
             document.getElementById('input-summary').value = cvData.summary;
-            
+
             renderEditorLists();
             renderPreview();
         }
@@ -282,7 +476,7 @@
 
         function renderPreview() {
             const preview = document.getElementById('cv-preview');
-            
+
             let html = `
                 <h1>${cvData.name}</h1>
                 <div class="contact-info">${cvData.contact}</div>
@@ -368,7 +562,7 @@
         // --- EXPORT TO WORD ---
         function exportWord() {
             const previewHTML = document.getElementById('cv-preview').innerHTML;
-            
+
             // Basic styles for Word doc preservation
             const styles = `
                 <style>
@@ -409,4 +603,5 @@
 
     </script>
 </body>
+
 </html>
