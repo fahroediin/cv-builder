@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 /* Base Reset */
 * {
     box-sizing: border-box;
@@ -255,42 +257,60 @@ textarea {
 }
 
 /* CV Content Styles (Theme: Classic) */
+.theme-classic {
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    color: #1a202c;
+}
+
 .theme-classic h1 {
-    text-align: center;
-    font-size: 18pt;
-    margin-bottom: 3px;
-    text-transform: uppercase;
-    margin-top: 0;
+    font-size: 20pt;
+    font-weight: 800;
+    color: #1a365d;
     letter-spacing: -0.3px;
+    line-height: 1.1;
+    margin-bottom: 2px;
+    text-transform: uppercase;
 }
 
 .theme-classic .contact-info {
     text-align: center;
-    font-size: 9pt;
+    font-size: 8.5pt;
     margin-bottom: 10px;
-    color: #444;
+    color: #2d3748;
 }
 
 .theme-classic h2 {
     font-size: 10.5pt;
-    border-bottom: 1.5px solid #333;
-    padding-bottom: 2px;
+    font-weight: 700;
+    color: #1a365d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-bottom: 3px;
+    border-bottom: 1.5px solid #cbd5e0;
     margin-top: 10px;
     margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
 }
 
 .theme-classic .job-title {
-    font-weight: bold;
+    font-weight: 700;
     font-size: 10pt;
+    color: #1a202c;
 }
 
 .theme-classic .job-dates {
     float: right;
-    font-style: italic;
     font-size: 8.5pt;
-    color: #555;
+    font-weight: 500;
+    color: #4a5568;
+    white-space: nowrap;
+}
+
+.theme-classic .job-company {
+    font-size: 9.5pt;
+    font-weight: 500;
+    color: #2b6cb0; /* Blue company name */
+    margin-top: 2px;
+    margin-bottom: 4px;
 }
 
 .theme-classic .job-header {
@@ -313,6 +333,7 @@ textarea {
     margin-bottom: 2px;
     font-size: 8.5pt;
     line-height: 1.4;
+    color: #2d3748;
 }
 
 .theme-classic p {
@@ -321,6 +342,7 @@ textarea {
     text-align: justify;
     font-size: 9pt;
     line-height: 1.5;
+    color: #2d3748;
 }
 
 .theme-classic .skills-list p {
@@ -336,7 +358,7 @@ textarea {
     gap: 16px;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #333;
+    border-bottom: 2.5px solid #1a365d;
 }
 
 .theme-classic .classic-photo {
@@ -345,7 +367,7 @@ textarea {
     border-radius: 50%;
     object-fit: cover;
     object-position: center top;
-    border: 2px solid #333;
+    border: 2.5px solid #1a365d;
     flex-shrink: 0;
 }
 
@@ -355,9 +377,9 @@ textarea {
 }
 
 .theme-classic .classic-subtitle {
-    font-size: 11pt;
+    font-size: 11.5pt;
     font-weight: 600;
-    color: #555;
+    color: #2b6cb0;
     margin-bottom: 3px;
 }
 
@@ -365,6 +387,32 @@ textarea {
     text-align: left;
     margin-bottom: 0;
     font-size: 8.5pt;
+}
+
+/* Education Layout */
+.theme-classic .edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 6px;
+}
+
+.theme-classic .edu-degree {
+    font-weight: bold;
+    font-size: 9.5pt;
+    color: #1a202c;
+}
+
+.theme-classic .edu-dates {
+    font-size: 8.5pt;
+    color: #4a5568;
+}
+
+.theme-classic .edu-school {
+    font-size: 9pt;
+    color: #2b6cb0;
+    font-weight: 500;
+    margin-bottom: 6px;
 }
 
 /* CV Content Styles (Theme: Modern) */

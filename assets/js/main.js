@@ -174,24 +174,37 @@ function renderClassicPreview() {
 
     cvData.education.forEach(ed => {
         html += `
-        <div class="job-header">
-            <span class="job-title">${parseText(ed.degree)}</span>
-            <span class="job-dates">${ed.dates}</span>
-            <br/>
-            <span>${parseText(ed.institution)}</span>
-        </div>`;
+        <div class="edu-row">
+            <span class="edu-degree">${parseText(ed.degree)}</span>
+            <span class="edu-dates">${ed.dates}</span>
+        </div>
+        <div class="edu-school">${parseText(ed.institution)}</div>
+        `;
     });
 
     html += `<h2>WORK EXPERIENCE</h2>`;
     cvData.experience.forEach(exp => {
+        let titleHtml = '';
+        let companyHtml = '';
+        const titleParts = exp.title.split(/ — | - /);
+        if (titleParts.length > 1) {
+            titleHtml = `<span class="job-title">${parseText(titleParts[0])}</span>`;
+            companyHtml = `<div class="job-company">${parseText(titleParts.slice(1).join(' — '))}</div>`;
+        } else {
+            titleHtml = `<span class="job-title">${parseText(exp.title)}</span>`;
+        }
+
         html += `
-        <div class="job-header">
-            <span class="job-title">${parseText(exp.title)}</span>
-            <span class="job-dates">${exp.dates}</span>
-        </div>
-        <ul>
-            ${exp.bullets.map(b => `<li>${parseText(b)}</li>`).join('')}
-        </ul>`;
+        <div class="experience-entry">
+            <div class="job-header">
+                ${titleHtml}
+                <span class="job-dates">${exp.dates}</span>
+            </div>
+            ${companyHtml}
+            <ul>
+                ${exp.bullets.map(b => `<li>${parseText(b)}</li>`).join('')}
+            </ul>
+        </div>`;
     });
 
     html += `<h2>SKILLS</h2><div class="skills-list">`;
