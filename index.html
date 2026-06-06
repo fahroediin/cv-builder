@@ -45,6 +45,9 @@
         <div class="form-group">
             <label>Full Name</label>
             <input type="text" id="input-name" oninput="updateCV()">
+            <label style="margin-top: 10px;">Photo</label>
+            <input type="file" id="input-photo" accept="image/*" onchange="handlePhotoUpload(event)" style="margin-bottom: 5px;">
+            <div id="photo-preview-container" style="margin-bottom: 10px;"></div>
             <label style="margin-top: 10px;">Initials/Avatar Text (for Modern Resume)</label>
             <input type="text" id="input-initials" value="IF" oninput="updateCV()" placeholder="e.g. IF">
             <label style="margin-top: 10px;">Subtitle / Job Title</label>

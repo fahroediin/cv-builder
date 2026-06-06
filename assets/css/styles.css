@@ -121,12 +121,13 @@ body {
     /* Minimum A4 height, expands if content is longer */
     height: max-content;
     margin: 0 auto;
-    padding: 30px;
+    padding: 24px 28px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
-    line-height: 1.5;
+    line-height: 1.45;
     color: #222;
     word-wrap: break-word;
+    font-size: 9pt;
 }
 
 /* Editor Styles */
@@ -256,38 +257,44 @@ textarea {
 /* CV Content Styles (Theme: Classic) */
 .theme-classic h1 {
     text-align: center;
-    font-size: 24px;
-    margin-bottom: 5px;
+    font-size: 18pt;
+    margin-bottom: 3px;
     text-transform: uppercase;
     margin-top: 0;
+    letter-spacing: -0.3px;
 }
 
 .theme-classic .contact-info {
     text-align: center;
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 9pt;
+    margin-bottom: 10px;
+    color: #444;
 }
 
 .theme-classic h2 {
-    font-size: 16px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 3px;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    font-size: 10.5pt;
+    border-bottom: 1.5px solid #333;
+    padding-bottom: 2px;
+    margin-top: 10px;
+    margin-bottom: 6px;
     text-transform: uppercase;
+    letter-spacing: 0.8px;
 }
 
 .theme-classic .job-title {
     font-weight: bold;
+    font-size: 10pt;
 }
 
 .theme-classic .job-dates {
     float: right;
     font-style: italic;
+    font-size: 8.5pt;
+    color: #555;
 }
 
 .theme-classic .job-header {
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .theme-classic .job-header::after {
@@ -297,23 +304,67 @@ textarea {
 }
 
 .theme-classic ul {
-    margin-top: 0;
-    padding-left: 20px;
-    margin-bottom: 15px;
+    margin-top: 2px;
+    padding-left: 16px;
+    margin-bottom: 8px;
 }
 
 .theme-classic li {
-    margin-bottom: 5px;
+    margin-bottom: 2px;
+    font-size: 8.5pt;
+    line-height: 1.4;
 }
 
 .theme-classic p {
-    margin-top: 5px;
-    margin-bottom: 15px;
+    margin-top: 2px;
+    margin-bottom: 8px;
     text-align: justify;
+    font-size: 9pt;
+    line-height: 1.5;
 }
 
 .theme-classic .skills-list p {
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    font-size: 8.5pt;
+    line-height: 1.4;
+}
+
+/* Classic Theme: Photo Header */
+.theme-classic .classic-header-with-photo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
+}
+
+.theme-classic .classic-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 2px solid #333;
+    flex-shrink: 0;
+}
+
+.theme-classic .classic-header-text h1 {
+    text-align: left;
+    margin-bottom: 1px;
+}
+
+.theme-classic .classic-subtitle {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 3px;
+}
+
+.theme-classic .classic-header-text .contact-info {
+    text-align: left;
+    margin-bottom: 0;
+    font-size: 8.5pt;
 }
 
 /* CV Content Styles (Theme: Modern) */
@@ -367,6 +418,15 @@ textarea {
     align-items: center;
     font-size: 36px;
     font-weight: normal;
+}
+
+.theme-modern .avatar-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 3px solid #007bff;
 }
 
 .theme-modern .modern-body {

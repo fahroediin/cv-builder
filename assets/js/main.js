@@ -1,6 +1,21 @@
 // --- THEME STATE ---
 let currentTheme = 'classic';
 
+// --- PHOTO HANDLING ---
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        cvData.photoURL = e.target.result;
+        // Show small preview in editor
+        const container = document.getElementById('photo-preview-container');
+        container.innerHTML = `<img src="${cvData.photoURL}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;object-position:center top;border:2px solid #007bff;">`;
+        renderPreview();
+    };
+    reader.readAsDataURL(file);
+}
+
 // --- RENDER FUNCTIONS ---
 
 // Populate inputs initially
@@ -128,9 +143,28 @@ function renderPreview() {
 function renderClassicPreview() {
     const preview = document.getElementById('cv-preview');
 
+    // Build header with photo support
+    let headerHtml = '';
+    if (cvData.photoURL) {
+        headerHtml = `
+            <div class="classic-header-with-photo">
+                <img src="${cvData.photoURL}" class="classic-photo" alt="Photo">
+                <div class="classic-header-text">
+                    <h1>${cvData.name}</h1>
+                    <div class="classic-subtitle">${cvData.subtitle || ''}</div>
+                    <div class="contact-info">${cvData.contact}</div>
+                </div>
+            </div>
+        `;
+    } else {
+        headerHtml = `
+            <h1>${cvData.name}</h1>
+            <div class="contact-info">${cvData.contact}</div>
+        `;
+    }
+
     let html = `
-        <h1>${cvData.name}</h1>
-        <div class="contact-info">${cvData.contact}</div>
+        ${headerHtml}
         
         <h2>PROFESSIONAL SUMMARY</h2>
         ${parseMultiline(cvData.summary)}
@@ -190,7 +224,10 @@ function renderModernPreview() {
                 <div class="contact-info-modern">${contactHtml}</div>
             </div>
             <div class="header-avatar">
-                <div class="avatar-circle">${cvData.initials || 'IF'}</div>
+                ${cvData.photoURL 
+                    ? `<img src="${cvData.photoURL}" class="avatar-photo" alt="Photo">` 
+                    : `<div class="avatar-circle">${cvData.initials || 'IF'}</div>`
+                }
             </div>
         </div>
 
